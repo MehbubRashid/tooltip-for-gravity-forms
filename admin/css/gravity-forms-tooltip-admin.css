@@ -1,0 +1,16 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.setting_inputs label {
+    display: block;
+}
+.pickr {
+    position: relative;
+    overflow: visible;
+    transform: translateY(0);
+    width: max-content;
+    float: left;
+    margin-top: 1px;
+}
