@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Tooltip for Gravity Forms
  * Description:       Add Tooltips next to field labels of Gravity Forms.
- * Version:           1.7
+ * Version:           1.8
  * Author:            Mehbub Rashid
  * Author URI:        https://www.facebook.com/disismehbub
  * License:           GPL-2.0+
@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GRAVITY_FORMS_TOOLTIP_VERSION', '1.7' );
+define( 'GRAVITY_FORMS_TOOLTIP_VERSION', '1.8' );
 
 /**
  * The code that runs during plugin activation.
@@ -44,38 +44,16 @@ function activate_gravity_forms_tooltip() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gravity-forms-tooltip-activator.php';
 
 	/* Set transient if gravity forms plugin is not active*/
-	if ( !is_plugin_active( 'gravityforms/gravityforms.php' ) ) {
-		set_transient( 'gravitychecker', true, 5 );
-	}
-	else {
-		delete_transient( 'tooltip_update_checker' );
-		add_option('tooltip_plugin_version', GRAVITY_FORMS_TOOLTIP_VERSION);
-		Gravity_Forms_Tooltip_Activator::activate();
+	add_option('tooltip_plugin_version', GRAVITY_FORMS_TOOLTIP_VERSION);
+	Gravity_Forms_Tooltip_Activator::activate();
 
-		if(!isset(get_option('gravity_tooltip_options')['allow_update'])) {
-			$toset = array(
-				'allow_update' => '1'
-			);
-			update_option('gravity_tooltip_options', $toset);
-		}
+	if(!isset(get_option('gravity_tooltip_options')['allow_update'])) {
+		$toset = array(
+			'allow_update' => '1'
+		);
+		update_option('gravity_tooltip_options', $toset);
 	}
 }
-
-add_action( 'admin_notices', 'gravitychecker' );
-/* If not gravity form active,show a message */
-function gravitychecker(){
-
-    /* Check transient, if available display notice */
-    if( get_transient( 'gravitychecker' ) ){
-        ?>
-        <div class="error is-dismissible"><p><?php echo esc_html__( 'Gravity Forms plugin is required to activate Tooltip for Gravity Forms plugin.', 'tooltip-for-gravity-forms' ); ?></p></div>
-		<?php
-		deactivate_plugins( plugin_basename( __FILE__ ) );
-        /* Delete transient, only display this notice once. */
-        delete_transient( 'gravitychecker' );
-    }
-}
-
 
 
 /* Deactivate this plugin when admin deactivates gravity forms plugin */
