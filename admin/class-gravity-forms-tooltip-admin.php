@@ -165,6 +165,42 @@ class Gravity_Forms_Tooltip_Admin {
 		}
 	}
 
+	function show_gravitizer_notice(){
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+ 
+		
+		if(get_option('display_gravitizer_notice', 'yes') == 'yes'){
+			// Check if not currently any of gravitizer installed
+			if(!is_plugin_active( 'gravitizer-lite/gravitizer-lite.php') && !is_plugin_active( 'gravitizer/gravitizer.php')){
+
+				// Check if was previously installed any time
+				if(get_option('maybe_gravitizer_installed', 'no') == 'no'){
+					?>
+					<div class="grav-notice notice notice-success"> 
+						<div class="gravitizer-gif" style="text-align: center;">
+							<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>">
+								<img style="width: 60%;" src="<?php echo plugin_dir_url( __FILE__ ) . 'images/gravitizer-beforeafter.gif'; ?>" alt="">
+							</a>
+						</div>
+						<div class="notice-buttons">
+							<a target="_blank" href="https://wordpress.org/plugins/gravitizer-lite"><button class="button button-primary"><?php  esc_html_e('Plugin Repository', 'tooltip-for-gravity-forms'); ?></button></a>
+							<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>"><button class="button button-primary"><?php  esc_html_e('Install Now', 'tooltip-for-gravity-forms'); ?></button></a>
+							<a href="?grav-dismiss=true"><button class="button button-cancel"><?php  esc_html_e('Close this', 'tooltip-for-gravity-forms'); ?></button></a>
+						</div>
+					</div>
+					<?php
+				}
+			}
+			
+		}
+	}
+
+
+	// after login hook, reset the gravitizer notice to yes
+	function user_logged_in(){
+		update_option('display_gravitizer_notice', 'yes');
+	}
+
 	function set_updater_transient( $data, $response ) {
 		if( isset( $data['update'] ) ) {
 			set_transient( 'tooltip_update_checker', true);
@@ -240,6 +276,11 @@ class Gravity_Forms_Tooltip_Admin {
 		add_settings_section( 'update_settings', 'Tooltip Settings', array($this, 'tooltip_update_section_text'), 'gravity_tooltip_section' );
 	
 		add_settings_field( 'gravity_tooltip_setting_inform_update', 'Inform me about updated news via email', array($this, 'gravity_tooltip_setting_inform_update'), 'gravity_tooltip_section', 'update_settings' );
+
+		// if notice dismiss is found on url, update the notice display option
+		if(isset($_GET['grav-dismiss'])){
+			update_option('display_gravitizer_notice', 'no');
+		}
 	}
 	function tooltip_update_section_text() {
 		echo '';

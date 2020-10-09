@@ -164,6 +164,8 @@ class Gravity_Forms_Tooltip {
 
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'tooltip_update_checker' );
 
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'show_gravitizer_notice' );
+
 		$this->loader->add_action( 'in_plugin_update_message-tooltip-for-gravity-forms/tooltip-for-gravity-forms.php', $plugin_admin, 'set_updater_transient', 10, 2 );
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'detect_plugin_update');
@@ -174,6 +176,9 @@ class Gravity_Forms_Tooltip {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'tooltip_add_settings_page' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'tooltip_register_settings' );
+
+		// after login hook, reset the gravitizer notice to yes
+		$this->loader->add_action( 'wp_login', $plugin_admin, 'user_logged_in' );
 
 	}
 
