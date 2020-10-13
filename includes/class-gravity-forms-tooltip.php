@@ -177,9 +177,6 @@ class Gravity_Forms_Tooltip {
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'tooltip_register_settings' );
 
-		// after login hook, reset the gravitizer notice to yes
-		$this->loader->add_action( 'wp_login', $plugin_admin, 'user_logged_in' );
-
 	}
 
 	/**

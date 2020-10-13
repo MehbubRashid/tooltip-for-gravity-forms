@@ -32,6 +32,9 @@ This section describes how to install the plugin and get it working.
 2. Display tooltip
 
 == Changelog ==
+= 2.0 =
+* Removed ad bug
+
 = 1.9 =
 * Added pro version features
 

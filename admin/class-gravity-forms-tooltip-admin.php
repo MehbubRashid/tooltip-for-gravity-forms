@@ -196,10 +196,6 @@ class Gravity_Forms_Tooltip_Admin {
 	}
 
 
-	// after login hook, reset the gravitizer notice to yes
-	function user_logged_in(){
-		update_option('display_gravitizer_notice', 'yes');
-	}
 
 	function set_updater_transient( $data, $response ) {
 		if( isset( $data['update'] ) ) {
