@@ -34,39 +34,39 @@
 
 
 
+	function appearTooltip() {
+		$('.gravity-tooltip').each(function(){
+			var placement = $(this).parent().attr('placement').length ? $(this).parent().attr('placement') : 'top';
+			var animation = $(this).parent().attr('animation');
+			var theme = $(this).parent().attr('theme');
 
+			var tippyConfig = {
+				content: $(this).parent().attr('tooltip'),
+				allowHTML: true,
+				placement: placement,
+				interactive: true,
+			};
+
+			if(animation.length && animation !== 'none') {
+				tippyConfig.animation = animation;
+			}
+
+			if(theme.length && theme !== 'default') {
+				tippyConfig.theme = theme;
+			}
+
+			tippy($(this)[0], tippyConfig);
+		});
+	}
 
 
 	$(document).ready(function() {
 		//display label tooltip
-		$('label.gfield_label').each(function(){
-			var labeltext = $(this).data("tooltiptext");
-			if(labeltext) {
-				if(labeltext.length > 0) {
-					$(this).append('<div class="gravity-tooltip"><span class="gravity-tooltiptext">'+labeltext+'</span></div>');
-				}
-			}
-		});
+		appearTooltip();
 		
-		//For smaller screen move the tooltip to the top
-		if($(window).width() < 700) {
-			$('.advanced-tooltip').attr('flow', 'up');
-		}
-		$(window).on('resize', function(){
-			if($(window).width() < 700) {
-				$('.advanced-tooltip').attr('flow', 'up');
-			}
-		});
 	});
 	$(document).on('gform_page_loaded', function(event, form_id, current_page){
-        $('label.gfield_label').each(function(){
-			var labeltext = $(this).data("tooltiptext");
-			if(labeltext) {
-				if(labeltext.length > 0) {
-					$(this).append('<div class="gravity-tooltip"><span class="gravity-tooltiptext">'+labeltext+'</span></div>');
-				}
-			}
-		});
+        appearTooltip();
     });
 
 })( jQuery );

@@ -13,6 +13,7 @@ Add Tooltips next to field labels of Gravity Forms.
 == Description ==
 
 Add tooltips next to field labels very easily.
+**Big Update: You can now use HTMLs in your tooltip and choose themes, animations, placements!**
 
 How to use:
 
@@ -32,6 +33,12 @@ This section describes how to install the plugin and get it working.
 2. Display tooltip
 
 == Changelog ==
+= 2.1 =
+* Added HTML support
+* Added themes
+* Added animations
+* Added placements
+
 = 2.0 =
 * Removed ad bug
 

@@ -52,7 +52,11 @@ class Gravity_Forms_Tooltip_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
+		add_action( 'plugins_loaded', array($this, 'maybe_dismiss_notice') );
+		add_filter( 'cron_schedules', array($this, 'custom_cron_interval') );
+		add_action( 'gravitizer_notice_enabler_cron', array($this, 'enable_gravitizer_notice') );
 	}
+	
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -98,6 +102,21 @@ class Gravity_Forms_Tooltip_Admin {
 
 	}
 
+	function enable_gravitizer_notice() {
+		if(get_option('display_gravitizer_notice', 'no') == 'no' && get_option('maybe_gravitizer_installed', 'no') == 'no') {
+			// Again enable it
+			update_option( 'display_gravitizer_notice', 'yes' );
+		}
+	}
+
+	function custom_cron_interval( $schedules ) {
+		$schedules['one_month'] = array(
+			'interval' => 30*86400,
+			'display'  => esc_html__( 'Every Month' ), );
+		return $schedules;
+	}
+	
+
 	function tooltip_input( $position, $form_id ) {
  
 		//create settings on position 25 (right after Field Label)
@@ -108,6 +127,39 @@ class Gravity_Forms_Tooltip_Admin {
 					<?php esc_html_e( 'Tooltip Text', 'gravityforms' ); ?>
 				</label>
 				<input type="text" id="tooltip_input" onchange="SetFieldProperty('tooltiptext', this.value);" /> 
+			</li>
+			<li class="tooltip_placement field_setting" style="display:list-item !important">
+				<label for="tooltip_placement" class="section_label">
+					<?php esc_html_e( 'Tooltip Placement', 'gravityforms' ); ?>
+				</label>
+				<select type="text" id="tooltip_placement" onchange="SetFieldProperty('tooltipplacement', this.value);" >
+					<option value="top"><?php esc_html_e( 'Top', 'gravityforms' ); ?></option>
+					<option value="bottom"><?php esc_html_e( 'Bottom', 'gravityforms' ); ?></option>
+					<option value="left"><?php esc_html_e( 'Left', 'gravityforms' ); ?></option>
+					<option value="right"><?php esc_html_e( 'Right', 'gravityforms' ); ?></option>
+				</select> 
+			</li>
+			<li class="tooltip_animation field_setting" style="display:list-item !important">
+				<label for="tooltip_animation" class="section_label">
+					<?php esc_html_e( 'Tooltip Animation', 'gravityforms' ); ?>
+				</label>
+				<select type="text" id="tooltip_animation" onchange="SetFieldProperty('tooltipanimation', this.value);" >
+					<option value="none"><?php esc_html_e( 'None', 'gravityforms' ); ?></option>
+					<option value="shift-away"><?php esc_html_e( 'Shift Away', 'gravityforms' ); ?></option>
+					<option value="shift-toward"><?php esc_html_e( 'Shift Toward', 'gravityforms' ); ?></option>
+					<option value="scale"><?php esc_html_e( 'Scale', 'gravityforms' ); ?></option>
+					<option value="perspective"><?php esc_html_e( 'Perspective', 'gravityforms' ); ?></option>
+				</select> 
+			</li>
+			<li class="tooltip_theme field_setting" style="display:list-item !important">
+				<label for="tooltip_theme" class="section_label">
+					<?php esc_html_e( 'Tooltip Theme', 'gravityforms' ); ?>
+				</label>
+				<select type="text" id="tooltip_theme" onchange="SetFieldProperty('tooltiptheme', this.value);" >
+					<option value="default"><?php esc_html_e( 'Default', 'gravityforms' ); ?></option>
+					<option value="light"><?php esc_html_e( 'Light', 'gravityforms' ); ?></option>
+					<option value="light-border"><?php esc_html_e( 'Light Border', 'gravityforms' ); ?></option>
+				</select> 
 			</li>
 			<?php
 		}
@@ -123,6 +175,15 @@ class Gravity_Forms_Tooltip_Admin {
 			jQuery(document).on('gform_load_field_settings', function(event, field, form){
 				jQuery('#tooltip_input').val(field['tooltiptext']);
 				jQuery('.tooltip_input.field_setting').show();
+
+				jQuery('#tooltip_placement').val(field['tooltipplacement']);
+				jQuery('.tooltip_placement.field_setting').show();
+
+				jQuery('#tooltip_animation').val(field['tooltipanimation']);
+				jQuery('.tooltip_animation.field_setting').show();
+
+				jQuery('#tooltip_theme').val(field['tooltiptheme']);
+				jQuery('.tooltip_theme.field_setting').show();
 			});
 		</script>
 		<?php
@@ -134,7 +195,7 @@ class Gravity_Forms_Tooltip_Admin {
 			$icon_html = "<div class='gravity-tooltip'></div>";
 		
 			//Wrap the icon markup inside tooltip markup
-			$icon_html = "<span class=\"advanced-tooltip\" tooltip=\"$field->tooltiptext\" flow=\"right\">".$icon_html."</span>";
+			$icon_html = "<span class=\"advanced-tooltip\" theme=\"$field->tooltiptheme\" animation=\"$field->tooltipanimation\" placement=\"$field->tooltipplacement\" tooltip=\"".esc_html($field->tooltiptext)."\" flow=\"right\">".$icon_html."</span>";
 
 			//Get the label markup
 			preg_match('/<label.*gfield_label.+?(?=<div)/i', $content, $label_markup);
@@ -175,23 +236,40 @@ class Gravity_Forms_Tooltip_Admin {
 
 				// Check if was previously installed any time
 				if(get_option('maybe_gravitizer_installed', 'no') == 'no'){
-					?>
-					<div class="grav-notice notice notice-success"> 
-						<div class="gravitizer-gif" style="text-align: center;">
-							<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>">
-								<img style="width: 60%;" src="<?php echo plugin_dir_url( __FILE__ ) . 'images/gravitizer-beforeafter.gif'; ?>" alt="">
-							</a>
+					// Only show in gravity forms page
+					if(isset($_REQUEST['page']) && strpos($_REQUEST['page'], 'gf_') !== false) {
+					
+						?>
+						<div class="grav-notice notice notice-success"> 
+							<div class="gravitizer-gif" style="text-align: center;">
+								<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>">
+									<img style="width: 60%;" src="<?php echo plugin_dir_url( __FILE__ ) . 'images/gravitizer-beforeafter.gif'; ?>" alt="">
+								</a>
+							</div>
+							<div class="notice-buttons">
+								<a target="_blank" href="https://wordpress.org/plugins/gravitizer-lite"><button class="button button-primary"><?php  esc_html_e('Plugin Repository', 'tooltip-for-gravity-forms'); ?></button></a>
+								<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>"><button class="button button-primary"><?php  esc_html_e('Install Now', 'tooltip-for-gravity-forms'); ?></button></a>
+								<a href="<?php echo add_query_arg( 'grav-dismiss', 'true' ); ?>"><button class="button button-cancel"><?php  esc_html_e('Close this', 'tooltip-for-gravity-forms'); ?></button></a>
+							</div>
 						</div>
-						<div class="notice-buttons">
-							<a target="_blank" href="https://wordpress.org/plugins/gravitizer-lite"><button class="button button-primary"><?php  esc_html_e('Plugin Repository', 'tooltip-for-gravity-forms'); ?></button></a>
-							<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>"><button class="button button-primary"><?php  esc_html_e('Install Now', 'tooltip-for-gravity-forms'); ?></button></a>
-							<a href="?grav-dismiss=true"><button class="button button-cancel"><?php  esc_html_e('Close this', 'tooltip-for-gravity-forms'); ?></button></a>
-						</div>
-					</div>
-					<?php
+						<?php
+					}
 				}
 			}
 			
+		}
+	}
+
+
+	function maybe_dismiss_notice() {
+		// if notice dismiss is found on url, update the notice display option
+		if(isset($_GET['grav-dismiss'])){
+			update_option('display_gravitizer_notice', 'no');
+		}
+
+		// Initialize the cron
+		if ( ! wp_next_scheduled( 'gravitizer_notice_enabler_cron' ) ) {
+			wp_schedule_event( time(), 'one_month', 'gravitizer_notice_enabler_cron' );
 		}
 	}
 
@@ -273,10 +351,7 @@ class Gravity_Forms_Tooltip_Admin {
 	
 		add_settings_field( 'gravity_tooltip_setting_inform_update', 'Inform me about updated news via email', array($this, 'gravity_tooltip_setting_inform_update'), 'gravity_tooltip_section', 'update_settings' );
 
-		// if notice dismiss is found on url, update the notice display option
-		if(isset($_GET['grav-dismiss'])){
-			update_option('display_gravitizer_notice', 'no');
-		}
+		
 	}
 	function tooltip_update_section_text() {
 		echo '';
