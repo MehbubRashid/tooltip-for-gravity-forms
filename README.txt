@@ -33,6 +33,10 @@ This section describes how to install the plugin and get it working.
 2. Display tooltip
 
 == Changelog ==
+= 2.3 =
+* Fixed list field tooltip
+
+
 = 2.2 =
 * Tested with WP 5.7
 

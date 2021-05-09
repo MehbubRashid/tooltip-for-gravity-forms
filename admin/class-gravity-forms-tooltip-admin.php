@@ -198,7 +198,7 @@ class Gravity_Forms_Tooltip_Admin {
 			$icon_html = "<span class=\"advanced-tooltip\" theme=\"$field->tooltiptheme\" animation=\"$field->tooltipanimation\" placement=\"$field->tooltipplacement\" tooltip=\"".esc_html($field->tooltiptext)."\" flow=\"right\">".$icon_html."</span>";
 
 			//Get the label markup
-			preg_match('/<label.*gfield_label.+?(?=<div)/i', $content, $label_markup);
+			preg_match('/<label.*gfield_label.+?(?=[\s]*<div|<style)/i', $content, $label_markup);
 			if(count($label_markup) > 0) {
 				$label_markup = $label_markup[0];
 			}
@@ -211,7 +211,7 @@ class Gravity_Forms_Tooltip_Admin {
 			$label_markup .= $icon_html;
 
 			//Replace the old label markup with the new one
-			$content = preg_replace('/<label.*gfield_label.+?(?=<div)/i', $label_markup, $content);
+			$content = preg_replace('/<label.*gfield_label.+?(?=[\s]*<div|<style)/i', $label_markup, $content);
 		}
 		
 		return $content;
