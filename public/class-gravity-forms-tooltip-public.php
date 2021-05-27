@@ -96,7 +96,8 @@ class Gravity_Forms_Tooltip_Public {
 		 * class.
 		 */
 		wp_enqueue_script( 'popper-js-for-tippy', plugin_dir_url( __FILE__ ) . 'js/popper.min.js', array('jquery'), null, true );
-		wp_enqueue_script( 'tippy', plugin_dir_url( __FILE__ ) . 'js/tippy.min.js', array('jquery', 'popper-js-for-tippy'), null, true );
+		wp_enqueue_script( 'tippy-polyfill', '//polyfill.io/v3/polyfill.min.js?features=Array.prototype.find,Promise,Object.assign', array('jquery'), null, true );
+		wp_enqueue_script( 'tippy', plugin_dir_url( __FILE__ ) . 'js/tippy.min.js', array('tippy-polyfill', 'jquery', 'popper-js-for-tippy'), null, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/gravity-forms-tooltip-public.js', array( 'jquery', 'popper-js-for-tippy', 'tippy' ), $this->version, false );
 
 	}

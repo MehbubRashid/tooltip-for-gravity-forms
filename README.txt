@@ -33,6 +33,10 @@ This section describes how to install the plugin and get it working.
 2. Display tooltip
 
 == Changelog ==
+= 2.4 =
+* Polyfill for ie11
+
+
 = 2.3 =
 * Fixed list field tooltip
 
