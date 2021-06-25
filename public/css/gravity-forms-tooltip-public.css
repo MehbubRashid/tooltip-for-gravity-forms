@@ -3,7 +3,9 @@
  * included in this file.
  */
 
-
+ .gform_wrapper.gravity-theme legend.gfield_label {
+    display: contents;
+}
 
 /* Tooltip css */
 

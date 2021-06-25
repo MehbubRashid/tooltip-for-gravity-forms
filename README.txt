@@ -4,7 +4,7 @@ Donate link: https://www.facebook.com/disismehbub
 Tags: tooltip,gravity forms,wordpress tooltip,gravity forms tooltip,label,info
 Requires at least: 3.0.1
 Tested up to: 5.7
-Stable tag: 2.5
+Stable tag: 2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,9 +33,14 @@ This section describes how to install the plugin and get it working.
 2. Display tooltip
 
 == Changelog ==
+= 2.6 =
+* Enabled legend tag support
+
+= 2.5 =
+* Minor changes
+
 = 2.4 =
 * Polyfill for ie11
-
 
 = 2.3 =
 * Fixed list field tooltip
