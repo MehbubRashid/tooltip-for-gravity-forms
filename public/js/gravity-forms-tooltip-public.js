@@ -29,13 +29,8 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-
-
-
-
-
-	function appearTooltip() {
-		$('.gravity-tooltip').each(function(){
+	$.fn.appearTooltip = function() {
+		this.each(function() {
 			var placement = $(this).parent().attr('placement').length ? $(this).parent().attr('placement') : 'top';
 			var animation = $(this).parent().attr('animation');
 			var theme = $(this).parent().attr('theme');
@@ -56,17 +51,18 @@
 			}
 
 			tippy($(this)[0], tippyConfig);
-		});
-	}
+        });
 
+        return this;
+	};
 
 	$(document).ready(function() {
 		//display label tooltip
-		appearTooltip();
-		
+		$('.gravity-tooltip').appearTooltip();
+
 	});
 	$(document).on('gform_page_loaded', function(event, form_id, current_page){
-        appearTooltip();
+        $('.gravity-tooltip').appearTooltip();
     });
 
 })( jQuery );
