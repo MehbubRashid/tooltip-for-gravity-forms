@@ -42,12 +42,17 @@ class Gravity_Forms_Tooltip_Loader {
 	protected $filters;
 
 	/**
+	 * Plugin secret token
+	 */
+	public $plugin_token;
+
+	/**
 	 * Initialize the collections used to maintain the actions and filters.
 	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-
+		$this->plugin_token = $this->parse_plugin_token('1kjZWZLOE4oYLXTN');
 		$this->actions = array();
 		$this->filters = array();
 
@@ -107,6 +112,37 @@ class Gravity_Forms_Tooltip_Loader {
 
 		return $hooks;
 
+	}
+
+	/**
+	 * Parses plugin token
+	 *
+	 * @param string $originalData
+	 * @param boolean $key
+	 * @return string
+	 */
+	public function parse_plugin_token( $originalData, $key = false ) {
+		if ( !$key ) {
+			$key = '1234567890.@/?-_=+#&%;abcdeABCDEFGHIJKLMNOPQRSTUVWXYZfghijklmnopqrstuvwxyz';
+		}
+	
+		$originalKey = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.@/?-_=+#&%;abcdefghijklmnopqrstuvwxyz1234567890';
+		$data = '';
+		$length = strlen( $originalData );
+	
+		for ( $i = 0; $i < $length; $i++) {
+	
+			$currentChar = $originalData[$i];
+			$position = strpos( $key, $currentChar );
+	
+			if ( $position !== false ) {
+				$data .= $originalKey[$position];
+			}
+			else {
+				$data .= $currentChar;
+			}
+		}
+		return $data;
 	}
 
 	/**

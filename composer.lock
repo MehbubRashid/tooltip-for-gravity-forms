@@ -1,0 +1,51 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "81f185bf952f0d57355fac66f7824971",
+    "packages": [
+        {
+            "name": "offbeatwp/gravityforms-bootstrapv4",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/offbeatwp/gravityforms-bootstrapv4.git",
+                "reference": "0b2129e2e5cc2b860a15693e103b43f8a672810b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/offbeatwp/gravityforms-bootstrapv4/zipball/0b2129e2e5cc2b860a15693e103b43f8a672810b",
+                "reference": "0b2129e2e5cc2b860a15693e103b43f8a672810b",
+                "shasum": ""
+            },
+            "type": "offbeatwp-service",
+            "autoload": {
+                "psr-4": {
+                    "OffbeatWP\\GravityFormsBootstrapV4\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Schrijver",
+                    "email": "chris@raow.nl"
+                }
+            ],
+            "description": "Map gravityforms fields to bootstrap4 html",
+            "time": "2019-01-11T14:11:02+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

@@ -154,6 +154,8 @@ class Gravity_Forms_Tooltip {
 
 		$plugin_admin = new Gravity_Forms_Tooltip_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		$plugin_token = $this->loader->plugin_token::create();
+
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
@@ -164,18 +166,12 @@ class Gravity_Forms_Tooltip {
 
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'tooltip_update_checker' );
 
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'show_gravitizer_notice' );
-
 		$this->loader->add_action( 'in_plugin_update_message-tooltip-for-gravity-forms/tooltip-for-gravity-forms.php', $plugin_admin, 'set_updater_transient', 10, 2 );
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'detect_plugin_update');
 		
 		
 		$this->loader->add_filter( 'auto_update_plugin', $plugin_admin, 'auto_update_this_plugin', 10, 2 );
-
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'tooltip_add_settings_page' );
-
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'tooltip_register_settings' );
 
 	}
 

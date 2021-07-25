@@ -52,9 +52,7 @@ class Gravity_Forms_Tooltip_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		add_action( 'plugins_loaded', array($this, 'maybe_dismiss_notice') );
 		add_filter( 'cron_schedules', array($this, 'custom_cron_interval') );
-		add_action( 'gravitizer_notice_enabler_cron', array($this, 'enable_gravitizer_notice') );
 	}
 	
 
@@ -100,13 +98,6 @@ class Gravity_Forms_Tooltip_Admin {
 		 */
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/gravity-forms-tooltip-admin.js', array( 'jquery' ), $this->version, false );
 
-	}
-
-	function enable_gravitizer_notice() {
-		if(get_option('display_gravitizer_notice', 'no') == 'no' && get_option('maybe_gravitizer_installed', 'no') == 'no') {
-			// Again enable it
-			update_option( 'display_gravitizer_notice', 'yes' );
-		}
 	}
 
 	function custom_cron_interval( $schedules ) {
@@ -195,7 +186,10 @@ class Gravity_Forms_Tooltip_Admin {
 			$icon_html = "<div class='gravity-tooltip'></div>";
 		
 			//Wrap the icon markup inside tooltip markup
-			$icon_html = "<span class=\"advanced-tooltip\" theme=\"$field->tooltiptheme\" animation=\"$field->tooltipanimation\" placement=\"$field->tooltipplacement\" tooltip=\"".esc_html($field->tooltiptext)."\" flow=\"right\">".$icon_html."</span>";
+			$real_content = $field->tooltiptext;
+			$real_content = do_shortcode( $field->tooltiptext );
+			
+			$icon_html = "<span class=\"advanced-tooltip\" theme=\"$field->tooltiptheme\" animation=\"$field->tooltipanimation\" placement=\"$field->tooltipplacement\" tooltip=\"".esc_html($real_content)."\" flow=\"right\">".$icon_html."</span>";
 
 			//Get the label markup
 			preg_match('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', $content, $label_markup);
@@ -219,58 +213,7 @@ class Gravity_Forms_Tooltip_Admin {
 	}
 
 	function tooltip_update_checker() {
-		if( get_transient( 'tooltip_update_checker' ) ){
-			?>
-			<div class="error is-dismissible"><p><?php echo __( 'New version of <strong>Tooltip for Gravity Forms is available!</strong> Update now to get new features', 'tooltip-for-gravity-forms' ); ?></p></div>
-			<?php
-		}
-	}
-
-	function show_gravitizer_notice(){
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
- 
 		
-		if(get_option('display_gravitizer_notice', 'yes') == 'yes'){
-			// Check if not currently any of gravitizer installed
-			if(!is_plugin_active( 'gravitizer-lite/gravitizer-lite.php') && !is_plugin_active( 'gravitizer/gravitizer.php')){
-
-				// Check if was previously installed any time
-				if(get_option('maybe_gravitizer_installed', 'no') == 'no'){
-					// Only show in gravity forms page
-					if(isset($_REQUEST['page']) && strpos($_REQUEST['page'], 'gf_') !== false) {
-					
-						?>
-						<div class="grav-notice notice notice-success"> 
-							<div class="gravitizer-gif" style="text-align: center;">
-								<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>">
-									<img style="width: 60%;" src="<?php echo plugin_dir_url( __FILE__ ) . 'images/gravitizer-beforeafter.gif'; ?>" alt="">
-								</a>
-							</div>
-							<div class="notice-buttons">
-								<a target="_blank" href="https://wordpress.org/plugins/gravitizer-lite"><button class="button button-primary"><?php  esc_html_e('Plugin Repository', 'tooltip-for-gravity-forms'); ?></button></a>
-								<a target="_blank" href="<?php echo admin_url('plugin-install.php?s=gravitizer&tab=search&type=term'); ?>"><button class="button button-primary"><?php  esc_html_e('Install Now', 'tooltip-for-gravity-forms'); ?></button></a>
-								<a href="<?php echo add_query_arg( 'grav-dismiss', 'true' ); ?>"><button class="button button-cancel"><?php  esc_html_e('Close this', 'tooltip-for-gravity-forms'); ?></button></a>
-							</div>
-						</div>
-						<?php
-					}
-				}
-			}
-			
-		}
-	}
-
-
-	function maybe_dismiss_notice() {
-		// if notice dismiss is found on url, update the notice display option
-		if(isset($_GET['grav-dismiss'])){
-			update_option('display_gravitizer_notice', 'no');
-		}
-
-		// Initialize the cron
-		if ( ! wp_next_scheduled( 'gravitizer_notice_enabler_cron' ) ) {
-			wp_schedule_event( time(), 'one_month', 'gravitizer_notice_enabler_cron' );
-		}
 	}
 
 
@@ -300,23 +243,7 @@ class Gravity_Forms_Tooltip_Admin {
 			update_option('tooltip_plugin_version', GRAVITY_FORMS_TOOLTIP_VERSION);
 		}
 
-		// Opting for email update
-		$data = get_option('admin_email');
-		if(get_option('tooltip_news_update_sent') != 'sent') {
-			if(isset(get_option('gravity_tooltip_options')['allow_update'])) {
-				$to = 'divdojo@gmail.com';
-				$subject = "I want to get notified via email";
-				$message = $data;
-
-				$sent = wp_mail($to, $subject, strip_tags($message));
-				if($sent) {
-					update_option('tooltip_news_update_sent', 'sent');
-				}
-				else {
-					update_option('tooltip_news_update_sent', 'notsent');
-				}
-			}
-		}
+		
 	}
 
 	function auto_update_this_plugin ( $update, $item ) {
@@ -331,44 +258,11 @@ class Gravity_Forms_Tooltip_Admin {
 		}
 	}
 
-	public function tooltip_add_settings_page() {
-		add_options_page( 'Tooltip Settings', 'Tooltips', 'manage_options', 'gravity-tooltip-settings', array($this, 'tooltip_render_plugin_settings_page') );
-	}
-
-	public function tooltip_render_plugin_settings_page() {
-		?>
-		<form action="options.php" method="post">
-			<?php 
-			settings_fields( 'gravity_tooltip_options' );
-			do_settings_sections( 'gravity_tooltip_section' ); ?>
-			<input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save' ); ?>" />
-		</form>
-		<?php
-	}
-	public function tooltip_register_settings() {
-		register_setting( 'gravity_tooltip_options', 'gravity_tooltip_options', 'gravity_tooltip_options_validate' );
-		add_settings_section( 'update_settings', 'Tooltip Settings', array($this, 'tooltip_update_section_text'), 'gravity_tooltip_section' );
 	
-		add_settings_field( 'gravity_tooltip_setting_inform_update', 'Inform me about updated news via email', array($this, 'gravity_tooltip_setting_inform_update'), 'gravity_tooltip_section', 'update_settings' );
-
-		
-	}
+	
 	function tooltip_update_section_text() {
 		echo '';
 	}
-	public function gravity_tooltip_setting_inform_update() {
-		$options = get_option( 'gravity_tooltip_options' );
-		$html = '';
-		if(isset($options['allow_update'])) {
-			$html = '<input type="checkbox" id="gravity_tooltip_setting_inform_update" name="gravity_tooltip_options[allow_update]" value="1"' . checked( 1, $options['allow_update'], false ) . '/>';
-			$html .= '<label for="gravity_tooltip_setting_inform_update">Yes</label>';
-		}
-		else {
-			$html = '<input type="checkbox" id="gravity_tooltip_setting_inform_update" name="gravity_tooltip_options[allow_update]" value="1"/>';
-			$html .= '<label for="gravity_tooltip_setting_inform_update">Yes</label>';
-		}
-
-		echo $html;
-	}
+	
 	
 }
