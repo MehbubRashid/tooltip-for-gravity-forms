@@ -154,8 +154,6 @@ class Gravity_Forms_Tooltip {
 
 		$plugin_admin = new Gravity_Forms_Tooltip_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$plugin_token = $this->loader->plugin_token::create();
-
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 

