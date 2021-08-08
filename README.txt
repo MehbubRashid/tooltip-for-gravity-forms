@@ -52,10 +52,8 @@ This section describes how to install the plugin and get it working.
 = 2.3 =
 * Fixed list field tooltip
 
-
 = 2.2 =
 * Tested with WP 5.7
-
 
 = 2.1 =
 * Added HTML support
