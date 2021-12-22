@@ -15,9 +15,9 @@
  * @wordpress-plugin
  * Plugin Name:       Tooltip for Gravity Forms
  * Description:       Add Tooltips next to field labels of Gravity Forms.
- * Version:           2.8
- * Author:            Mehbub Rashid
- * Author URI:        https://www.facebook.com/disismehbub
+ * Version:           2.9
+ * Author:            DivDojo
+ * Author URI:        https://codecanyon.net/user/divdojo/portfolio
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       tooltip-for-gravity-forms
@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GRAVITY_FORMS_TOOLTIP_VERSION', '2.8' );
+define( 'GRAVITY_FORMS_TOOLTIP_VERSION', '2.9' );
 
 /**
  * The code that runs during plugin activation.

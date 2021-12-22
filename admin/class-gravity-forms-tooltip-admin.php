@@ -135,7 +135,7 @@ class Gravity_Forms_Tooltip_Admin {
 			$label_markup .= $icon_html;
 
 			//Replace the old label markup with the new one
-			$content = preg_replace('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', $label_markup, $content);
+			$content = preg_replace('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', addcslashes($label_markup, '\\$'), $content);
 		}
 		
 		return $content;
