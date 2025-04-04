@@ -3,17 +3,17 @@ Contributors: mehbubrashid
 Donate link: https://www.facebook.com/disismehbub
 Tags: tooltip,gravity forms,wordpress tooltip,gravity forms tooltip,label,info
 Requires at least: 3.0.1
-Tested up to: 5.8
-Stable tag: 2.9
+Tested up to: 6.7.2
+Stable tag: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add Tooltips next to field labels of Gravity Forms.
+Add tooltips next to Gravity Forms field labels very easily. Supports placements, themes, animations.
 
 == Description ==
 
-Add tooltips next to field labels very easily.
-**July 2021 Update: Now you can use shortcodes as tooltip content!**
+Add tooltips next to Gravity Forms field labels very easily. Supports placements, themes, animations.
+**Update: Now you can use shortcodes as tooltip content!**
 **Big Update: You can now use HTMLs in your tooltip and choose themes, animations, placements!**
 
 How to use:
@@ -30,10 +30,13 @@ This section describes how to install the plugin and get it working.
 
 == Screenshots ==
 
-1. Add tooltip text
-2. Display tooltip
+1. Display tooltip
+2. Tooltip settings fields
 
 == Changelog ==
+= 3.0 =
+* Made tooltip work for gravity forms 2.9.5
+
 = 2.9 =
 * Fixed dollar sign disappearing issue
 

@@ -73,7 +73,7 @@ class Gravity_Forms_Tooltip_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/gravity-forms-tooltip-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name . '-public', plugin_dir_url( __FILE__ ) . 'css/gravity-forms-tooltip-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -98,7 +98,7 @@ class Gravity_Forms_Tooltip_Public {
 		wp_enqueue_script( 'popper-js-for-tippy', plugin_dir_url( __FILE__ ) . 'js/popper.min.js', array('jquery'), null, true );
 		wp_enqueue_script( 'tippy-polyfill', '//cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=Array.prototype.find,Promise,Object.assign', array('jquery'), null, true );
 		wp_enqueue_script( 'tippy', plugin_dir_url( __FILE__ ) . 'js/tippy.min.js', array('tippy-polyfill', 'jquery', 'popper-js-for-tippy'), null, true );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/gravity-forms-tooltip-public.js', array( 'jquery', 'popper-js-for-tippy', 'tippy' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . '-public', plugin_dir_url( __FILE__ ) . 'js/gravity-forms-tooltip-public.js', array( 'jquery', 'popper-js-for-tippy', 'tippy' ), $this->version, false );
 
 	}
 

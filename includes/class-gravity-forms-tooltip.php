@@ -57,6 +57,9 @@ class Gravity_Forms_Tooltip {
 	 */
 	protected $version;
 
+
+	protected $plugin_public;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -76,6 +79,10 @@ class Gravity_Forms_Tooltip {
 
 		$this->load_dependencies();
 		$this->set_locale();
+
+
+		$this->plugin_public = new Gravity_Forms_Tooltip_Public($this->get_plugin_name(), $this->get_version());
+
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -171,6 +178,15 @@ class Gravity_Forms_Tooltip {
 		
 		$this->loader->add_filter( 'auto_update_plugin', $plugin_admin, 'auto_update_this_plugin', 10, 2 );
 
+
+		// if current page is gravity forms edit form page, enqueue scripts needed for tooltip
+		// so that we can render tooltip in edit and preview mode
+		// if ( isset( $_GET['page'] ) && $_GET['page'] == 'gf_edit_forms' ) {
+		// 	$plugin_public = $this->plugin_public;
+		// 	$this->loader->add_action('admin_enqueue_scripts', $plugin_public, 'enqueue_styles');
+		// 	$this->loader->add_action('admin_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+		// }
+
 	}
 
 	/**
@@ -182,7 +198,7 @@ class Gravity_Forms_Tooltip {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Gravity_Forms_Tooltip_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = $this->plugin_public;
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
