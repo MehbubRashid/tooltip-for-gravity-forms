@@ -135,7 +135,12 @@ class Gravity_Forms_Tooltip_Admin
 
 
 			//Append icon after label markup
-			$label_markup = str_replace('</label>', $icon_html . '</label>', $label_markup);
+			if (strpos($label_markup, '</label>') !== false) {
+				$label_markup = str_replace('</label>', $icon_html . '</label>', $label_markup);
+			} 
+			else if (strpos($label_markup, '</legend>') !== false) {
+				$label_markup = str_replace('</legend>', $icon_html . '</legend>', $label_markup);
+			}
 
 			//Replace the old label markup with the new one
 			$content = preg_replace('/(?=[\s]*<label|<legend).*gfield_label.+?(?=[\s]*<div|<style)/i', addcslashes($label_markup, '\\$'), $content);
