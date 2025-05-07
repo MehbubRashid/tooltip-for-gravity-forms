@@ -4,7 +4,7 @@ Donate link: https://www.facebook.com/disismehbub
 Tags: tooltip,gravity forms,wordpress tooltip,gravity forms tooltip,label,info
 Requires at least: 3.0.1
 Tested up to: 6.8.1
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,9 @@ This section describes how to install the plugin and get it working.
 2. Tooltip settings fields
 
 == Changelog ==
+= 3.0.2 =
+* Removed unnecessary console logs.
+
 = 3.0.1 =
 * Fixed issue: tooltip not appearing if field title is legend instead of label
 

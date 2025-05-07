@@ -1,4 +1,3 @@
-console.log('gravity-forms-tooltip-public.js loaded');
 
 (function( $ ) {
 	'use strict';
@@ -37,7 +36,6 @@ console.log('gravity-forms-tooltip-public.js loaded');
 
 
 	window.appearTooltip = function() {
-		console.log('appearing tooltip');
 		$('.gravity-tooltip').each(function(){
 			var placement = $(this).parent().attr('placement').length ? $(this).parent().attr('placement') : 'top';
 			var animation = $(this).parent().attr('animation');
@@ -58,16 +56,12 @@ console.log('gravity-forms-tooltip-public.js loaded');
 				tippyConfig.theme = theme;
 			}
 
-			console.log(tippyConfig);
-			console.log($(this)[0]);
-
 			tippy($(this)[0], tippyConfig);
 		});
 	}
 
 
 	$(document).ready(function() {
-		console.log('document ready');
 		//display label tooltip
 		appearTooltip();
 		
